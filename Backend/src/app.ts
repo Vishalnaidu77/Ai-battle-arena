@@ -11,7 +11,6 @@ app.get('/', (req, res) => {
 app.get('/get-res', async (req, res) => {
     const result = await runGraph('Write factorial number code in js.')
     console.log(result);
-    
 
     res.json({
         result
