@@ -1,18 +1,22 @@
 import express from 'express'
 import runGraph from './ai/graph.ai.js';
+import cors from 'cors'
 
 
 const app = express()
+app.use(express.json())
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}))
 
-app.get('/', (req, res) => {
-    console.log("Jai Shree ram");
-})
-
-app.get('/get-res', async (req, res) => {
-    const result = await runGraph('Write factorial number code in js.')
+app.post('/invoke', async (req, res) => {
+    const { input } = req.body
+    const result = await runGraph(input)
     console.log(result);
 
     res.json({
+        message: "AI response generated successfully.",
         result
     })
 })

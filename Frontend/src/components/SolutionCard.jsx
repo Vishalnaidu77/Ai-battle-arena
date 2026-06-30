@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 export default function SolutionCard({ modelName, content, score, isWinner, type }) {
   const [copied, setCopied] = useState(false);
@@ -63,10 +64,45 @@ export default function SolutionCard({ modelName, content, score, isWinner, type
       </div>
 
       {/* Card Body / Formatted Content */}
-      <div className="p-6 flex-1 overflow-x-auto text-zinc-200 text-sm leading-relaxed font-mono bg-[#161618]">
-        <pre className="whitespace-pre-wrap break-words font-mono text-[13px] leading-6 text-zinc-300">
-          {content}
-        </pre>
+      <div className="p-6 flex-1 overflow-x-auto text-zinc-200 text-sm leading-relaxed bg-[#161618]">
+        <div className="markdown-content font-sans">
+          <ReactMarkdown
+            components={{
+              code({node, className, children, ...props}) {
+                const match = /language-(\w+)/.exec(className || '');
+                const isBlock = match || String(children).includes('\n');
+                
+                return isBlock ? (
+                  <div className="relative mt-4 mb-4 rounded-lg bg-[#0D1515] border border-[#2A2A2C] overflow-hidden shadow-lg">
+                    <div className="flex items-center justify-between px-4 py-2 bg-[#111113] border-b border-[#2A2A2C]">
+                      <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">{match ? match[1] : 'code'}</span>
+                    </div>
+                    <pre className="p-4 overflow-x-auto font-mono text-[13px] leading-6 text-zinc-300">
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    </pre>
+                  </div>
+                ) : (
+                  <code className="px-1.5 py-0.5 rounded-md bg-[#1D1D20] border border-[#2A2A2C] text-[#00F5FF] font-mono text-[13px]" {...props}>
+                    {children}
+                  </code>
+                )
+              },
+              p: ({children}) => <p className="mb-4 text-zinc-300 font-sans leading-relaxed last:mb-0">{children}</p>,
+              h1: ({children}) => <h1 className="text-xl font-semibold mb-4 mt-6 text-white font-sans tracking-wide">{children}</h1>,
+              h2: ({children}) => <h2 className="text-lg font-semibold mb-3 mt-5 text-white font-sans tracking-wide">{children}</h2>,
+              h3: ({children}) => <h3 className="text-base font-semibold mb-2 mt-4 text-zinc-100 font-sans tracking-wide">{children}</h3>,
+              ul: ({children}) => <ul className="list-disc pl-5 mb-4 text-zinc-300 font-sans space-y-2 marker:text-[#00F5FF]">{children}</ul>,
+              ol: ({children}) => <ol className="list-decimal pl-5 mb-4 text-zinc-300 font-sans space-y-2 marker:text-[#00F5FF]">{children}</ol>,
+              li: ({children}) => <li className="leading-relaxed pl-1">{children}</li>,
+              a: ({children, href}) => <a href={href} className="text-[#00F5FF] hover:text-[#00DCE5] hover:underline transition-colors" target="_blank" rel="noopener noreferrer">{children}</a>,
+              blockquote: ({children}) => <blockquote className="border-l-2 border-[#00F5FF]/50 pl-4 py-1 mb-4 italic text-zinc-400 bg-[#111113] rounded-r-lg">{children}</blockquote>
+            }}
+          >
+            {content}
+          </ReactMarkdown>
+        </div>
       </div>
     </div>
   );

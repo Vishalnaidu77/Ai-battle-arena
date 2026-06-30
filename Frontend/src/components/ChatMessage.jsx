@@ -3,7 +3,9 @@ import SolutionCard from './SolutionCard';
 import JudgePanel from './JudgePanel';
 
 export default function ChatMessage({ message }) {
-  const { problem, solution_1, solution_2, judge } = message.result;
+  console.log(message);
+  
+  const { problem, solution_1, solution_2, judge } = message;
 
   const isAlphaWinner = judge.solution_1_score >= judge.solution_2_score;
   const isBetaWinner = judge.solution_2_score >= judge.solution_1_score;

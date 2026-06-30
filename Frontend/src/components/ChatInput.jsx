@@ -1,12 +1,16 @@
+import axios from 'axios';
 import React, { useState } from 'react';
+import { getRes } from '../features/chat/services/ai.service';
 
 export default function ChatInput({ onSendMessage, isLoading }) {
   const [input, setInput] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
-    onSendMessage(input);
+
+    onSendMessage({ input })
+
     setInput('');
   };
 
@@ -20,7 +24,7 @@ export default function ChatInput({ onSendMessage, isLoading }) {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/90 to-transparent pt-10 pb-8 px-8 z-40">
       <div className="max-w-4xl mx-auto">
-        <form 
+        <form
           onSubmit={handleSubmit}
           className="relative bg-[#161618] border border-[#2A2A2C] rounded-2xl shadow-2xl backdrop-blur-xl transition-all duration-300 focus-within:border-[#00F5FF]/40 focus-within:shadow-[0_0_30px_rgba(0,245,255,0.1)]"
         >
@@ -52,7 +56,7 @@ export default function ChatInput({ onSendMessage, isLoading }) {
                 <>
                   <span>Submit</span>
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M5 12H19M19 12L12 5M19 12L12 19" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </>
               )}
