@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import './App.css';
-import Header from './components/Header';
-import ChatInput from './components/ChatInput';
-import ChatMessage from './components/ChatMessage';
-import EmptyState from './components/EmptyState';
+import Header from '../components/Header';
+import ChatInput from '../components/ChatInput';
+import ChatMessage from '../components/ChatMessage';
+import EmptyState from '../components/EmptyState';
+import axios from 'axios'
+import { getRes } from '../features/chat/services/ai.service';
 
 // Pre-baked high-quality benchmark responses matching the exact data schema
 const BENCHMARK_DATA = {
@@ -202,16 +204,19 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSendMessage = (promptText) => {
-    if (!promptText.trim()) return;
+  const handleSendMessage = async ({ input }) => {
+    if (!input.trim()) return;
     setIsLoading(true);
+
+    const res = await getRes({ input })
+    console.log(res);
+
 
     // Simulate arbiter evaluation delay for realistic AI feel
     setTimeout(() => {
-      const matchedData = BENCHMARK_DATA[promptText.trim()] || generateDynamicResponse(promptText.trim());
       const newMessage = {
         id: Date.now(),
-        ...matchedData
+        ...res.data.result
       };
 
       setMessages((prev) => [...prev, newMessage]);
